@@ -17,7 +17,6 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    likes = UserSerializer(many=True, read_only=True)
     ingredients = IngredientSerializer(many=True, read_only=True)
 
     class Meta:

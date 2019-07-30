@@ -9,7 +9,7 @@ class Ingredient(models.Model):
 
 class Recipe(models.Model):
     name = models.CharField(max_length=64, unique=True, db_index=True)
-    likes = models.ManyToManyField(User, related_name='+', blank=True)
+    likes = models.IntegerField(default=0)
     ingredients = models.ManyToManyField(Ingredient, related_name='+', blank=True)
 
     @property
