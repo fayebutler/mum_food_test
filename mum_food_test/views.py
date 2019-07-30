@@ -19,4 +19,5 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe = self.get_object()
         recipe.likes += 1
         recipe.save()
-        return Response({'status': 'Recipe liked'})
+        data = self.get_serializer(recipe).data
+        return Response(data)

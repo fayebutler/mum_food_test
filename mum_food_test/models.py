@@ -18,4 +18,3 @@ class Recipe(models.Model):
             if not ingredient.vegan:
                 return False
         return True
-
