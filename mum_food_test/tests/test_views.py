@@ -32,6 +32,35 @@ def test_recipes_list(client: APIClient):
 
 
 @pytest.mark.django_db
+def test_recipes_list_vegan(client: APIClient):
+    ingredient = factories.IngredientFactory(vegan=True)
+    recipe = factories.RecipeFactory(ingredients=[ingredient])
+    resp = client.get('/api/recipes/?vegan=True')
+
+    assert resp.status_code == 200
+    data = resp.json()
+    assert isinstance(data, list)
+    assert len(data) == 1
+    assert data[0]['id'] == recipe.id
+    assert data[0]['name'] == recipe.name
+
+
+@pytest.mark.django_db
+def test_recipes_list_ingredients(client: APIClient):
+    ingredient1 = factories.IngredientFactory()
+    ingredient2 = factories.IngredientFactory()
+    recipe = factories.RecipeFactory(ingredients=[ingredient1, ingredient2])
+    resp = client.get(f'/api/recipes/?ingredients={ingredient1.name},{ingredient2.name}')
+
+    assert resp.status_code == 200
+    data = resp.json()
+    assert isinstance(data, list)
+    assert len(data) == 1
+    assert data[0]['id'] == recipe.id
+    assert data[0]['name'] == recipe.name
+
+
+@pytest.mark.django_db
 def test_recipes_detail(client: APIClient):
     recipe = factories.RecipeFactory()
     resp = client.get(f'/api/recipes/{recipe.id}/')

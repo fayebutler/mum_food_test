@@ -12,7 +12,28 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
 class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.RecipeSerializer
-    queryset = models.Recipe.objects.all().order_by('likes')
+
+    def get_queryset(self):
+        queryset = models.Recipe.objects.all().order_by('likes')
+
+        ingredients = self.request.query_params.get('ingredients', None)
+        vegan = self.request.query_params.get('vegan', None)
+
+        if vegan:
+            queryset = queryset.exclude(
+                ingredients__vegan=False
+            ).order_by('likes').distinct()
+
+        if ingredients:
+            ingredient_objs = [
+                models.Ingredient.objects.get(name=ingredient)
+                for ingredient in ingredients.split(',')
+            ]
+            queryset = queryset.filter(
+                ingredients__in=ingredient_objs
+            ).order_by('likes').distinct()
+
+        return queryset
 
     @action(detail=True, methods=['post'])
     def like(self, request, pk=None):  # Parameters not used, but needed for rest framework else will error
