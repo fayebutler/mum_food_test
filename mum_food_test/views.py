@@ -39,7 +39,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return queryset
 
     @action(detail=True, methods=['post'])
-    def like(self, request, pk=None):  # Parameters not used, but needed for rest framework else will error
+    def like(self, request, pk=None, **kwargs):  # Parameters not used, but needed for rest framework else will error
         recipe = self.get_object()
         recipe.likes += 1
         recipe.save()
